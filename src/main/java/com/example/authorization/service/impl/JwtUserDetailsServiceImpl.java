@@ -1,0 +1,30 @@
+package com.example.authorization.service.impl;
+
+import com.example.authorization.exception.DataNotFoundException;
+import com.example.authorization.model.User;
+import com.example.authorization.repository.IUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+
+@Service
+public class JwtUserDetailsServiceImpl implements UserDetailsService {
+    private IUserRepository userRepository;
+
+    public User user;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        this.user = this.userRepository.findTopByUsername(username).orElseThrow(() -> new DataNotFoundException("User not found"));
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), new ArrayList<>());
+    }
+
+    @Autowired
+    public void setUserRepository(IUserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+}
