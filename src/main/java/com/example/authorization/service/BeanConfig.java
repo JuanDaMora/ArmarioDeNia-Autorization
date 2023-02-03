@@ -19,8 +19,5 @@ public class BeanConfig {
     public IUserService userService() {
         return new UserServiceImpl();
     }
-    @Bean(name="beanName")
-    public IAuthorizationService authorizationService() {
-        return new AuthorizationServiceImpl();
-    }
+
 }
