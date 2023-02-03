@@ -14,7 +14,7 @@ import java.util.Date;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(schema = "campuslink", name = "access_control")
+@Table(schema = "armariodenia", name = "access_control")
 public class AccessControl implements Serializable {
     private static final long serialVersionUID = -4358981442375745702L;
 
