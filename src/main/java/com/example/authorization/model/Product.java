@@ -13,17 +13,17 @@ import java.util.Date;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(schema = "armariodenia", name = "color")
-public class Color implements Serializable {
-    private static final long serialVersionUID = -8763885979493579189L;
-
+@Table(schema = "armariodenia", name = "product")
+public class Product implements Serializable {
+    private static final long serialVersionUID = -3412838704915893943L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
     @Column(name = "description", nullable = false)
     private String description;
+    @Column(name = "is_for_womans", nullable = false)
+    private Boolean is_for_womans;
 
     @Column(name = "created")
     @Temporal(TemporalType.DATE)

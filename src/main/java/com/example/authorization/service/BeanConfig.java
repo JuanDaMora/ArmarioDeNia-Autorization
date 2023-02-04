@@ -1,12 +1,8 @@
 package com.example.authorization.service;
 
-import com.example.authorization.repository.IColorRepository;
-import com.example.authorization.service.impl.AuthorizationServiceImpl;
-import com.example.authorization.service.impl.ColorServiceImpl;
-import com.example.authorization.service.impl.UserServiceImpl;
-import com.example.authorization.service.interfaces.IAuthorizationService;
-import com.example.authorization.service.interfaces.IColorService;
-import com.example.authorization.service.interfaces.IUserService;
+import com.example.authorization.service.impl.*;
+import com.example.authorization.service.interfaces.*;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +22,9 @@ public class BeanConfig {
     public IColorService colorService() { return new ColorServiceImpl();  }
     @Bean
     public IAuthorizationService authorizationService() { return new AuthorizationServiceImpl(); }
-
+    @Bean
+    public IsAdminService adminService() { return new IsAdminServiceImpl(); }
+    @Bean
+    public IProductService productService() { return new ProductServiceImpl(); }
 
 }
