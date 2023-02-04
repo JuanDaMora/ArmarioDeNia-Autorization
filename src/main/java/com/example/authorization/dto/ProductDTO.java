@@ -18,4 +18,8 @@ public class ProductDTO implements Serializable {
     private String description;
     @NotNull
     private Boolean is_for_womans;
+    @NotNull
+    private Long amount;
+    @NotNull
+    private String price;
 }

@@ -24,6 +24,10 @@ public class Product implements Serializable {
     private String description;
     @Column(name = "is_for_womans", nullable = false)
     private Boolean is_for_womans;
+    @Column(name = "amount", nullable = false)
+    private Long  amount;
+    @Column(name = "price ", nullable = false)
+    private String price ;
 
     @Column(name = "created")
     @Temporal(TemporalType.DATE)
