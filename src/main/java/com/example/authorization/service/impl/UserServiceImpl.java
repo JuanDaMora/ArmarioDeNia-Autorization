@@ -2,6 +2,7 @@ package com.example.authorization.service.impl;
 
 import com.example.authorization.dto.UserDTO;
 import com.example.authorization.exception.DataNotFoundException;
+import com.example.authorization.exception.TechnicalException;
 import com.example.authorization.exception.TransactionException;
 import com.example.authorization.mappers.UserMapper;
 import com.example.authorization.model.User;
@@ -20,6 +21,7 @@ public class UserServiceImpl implements IUserService{
         private JwtTokenUtil jwtTokenUtil;
 
 
+
         @Override
         public UserDTO getUserDataByToken(String token) {
             String username = null;
@@ -31,8 +33,7 @@ public class UserServiceImpl implements IUserService{
                     System.out.println("JwtRequestFilter: " + e.getMessage());
                 }
             } else {
-                System.out.println("JwtRequestFilter: No token found in request header");
-            }
+                throw new TechnicalException("Token not found");            }
             User user = this.userRepository.findTopByUsername(username)
                     .orElseThrow((() -> new DataNotFoundException("User not found")));
             return UserMapper.INSTANCE.toUserDTO(user);
