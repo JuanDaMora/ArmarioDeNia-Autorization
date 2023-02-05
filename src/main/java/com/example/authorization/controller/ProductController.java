@@ -1,6 +1,6 @@
 package com.example.authorization.controller;
 
-import com.example.authorization.dto.ProductDTO;
+import com.example.authorization.dto.DetailProductDTO;
 import com.example.authorization.service.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +20,9 @@ public class ProductController {
     private IProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getProducts() {
-        List<ProductDTO> productDTO = this.productService.getAllProducts();
-        return ResponseEntity.ok(productDTO);
+    public ResponseEntity<List<DetailProductDTO>> getDetailProducts() {
+        List<DetailProductDTO> detailProductDTOS = this.productService.getDetailProducts();
+        return ResponseEntity.ok(detailProductDTOS);
     }
 
 }
