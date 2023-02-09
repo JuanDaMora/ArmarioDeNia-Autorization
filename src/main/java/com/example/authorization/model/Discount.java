@@ -13,25 +13,22 @@ import java.util.Date;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(schema = "armariodenia", name = "product")
-public class Product implements Serializable {
-    private static final long serialVersionUID = -3412838704915893943L;
+@Table(schema = "armariodenia", name = "discount")
+public class Discount implements Serializable {
+    private static final long serialVersionUID = 3748530045060531032L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-    @Column(name = "description", nullable = false)
-    private String description;
-    @Column(name = "url_photo", nullable = false)
-    private String url_photo;
 
-    @Column(name = "is_for_womans", nullable = false)
-    private Boolean is_for_womans;
-    @Column(name = "amount", nullable = false)
-    private Long  amount;
-    @Column(name = "price ", nullable = false)
-    private String price ;
+    @Column(name = "id_product", nullable = false)
+    private Long id_product;
+    @Column(name = "percentage", nullable = false)
+    private String percentage;
 
+    @Column(name = "finish", nullable = false)
+    @Temporal(TemporalType.DATE)
+    private Date finish;
     @Column(name = "created")
     @Temporal(TemporalType.DATE)
     private Date created = new Date();
@@ -39,4 +36,6 @@ public class Product implements Serializable {
     @Column(name = "updated")
     @Temporal(TemporalType.DATE)
     private Date updated = new Date();
+
+
 }

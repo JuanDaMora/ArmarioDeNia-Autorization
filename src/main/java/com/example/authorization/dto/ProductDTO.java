@@ -22,4 +22,6 @@ public class ProductDTO implements Serializable {
     private Long amount;
     @NotNull
     private String price;
+    @NotNull
+    private String url_photo;
 }

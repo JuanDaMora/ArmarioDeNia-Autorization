@@ -15,7 +15,9 @@ import java.util.List;
 public class DetailProductDTO implements Serializable {
     private static final long serialVersionUID = 6476863212782722364L;
     @NotNull
-    private Long id_product;
+    private Long id;
+    @NotNull
+    private String url_photo;
     @NotNull
     private List<String> type_product;
     @NotNull

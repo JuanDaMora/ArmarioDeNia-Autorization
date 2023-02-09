@@ -1,5 +1,6 @@
 package com.example.authorization.mappers;
 
+import com.example.authorization.dto.DetailProductDTO;
 import com.example.authorization.dto.ProductDTO;
 import com.example.authorization.dto.UserDTO;
 import com.example.authorization.model.Product;
@@ -17,4 +18,7 @@ public interface ProductMapper {
     ProductDTO toProductDTO(Product product);
 
     Product toProduct(ProductDTO productDTO);
+
+    DetailProductDTO toDetailProductDTO(Product product);
+    Product toProduct(DetailProductDTO detailProductDTO);
 }

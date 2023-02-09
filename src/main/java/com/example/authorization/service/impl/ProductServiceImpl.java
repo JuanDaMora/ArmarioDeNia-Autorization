@@ -1,118 +1,130 @@
 package com.example.authorization.service.impl;
 
 import com.example.authorization.dto.*;
+import com.example.authorization.exception.DataNotFoundException;
+import com.example.authorization.exception.TransactionException;
+import com.example.authorization.mappers.DiscountMapper;
+import com.example.authorization.mappers.ProductMapper;
 import com.example.authorization.model.*;
 import com.example.authorization.repository.*;
 import com.example.authorization.service.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @autor Juan David Morantes Vergara
  */
+@Service
 public class ProductServiceImpl implements IProductService {
     private IProductRepository productRepository;
+    private IDiscountRepository discountRepository;
+    private IColorRepository colorRepository;
     private IColorProductRespository colorProductRespository;
+    private ITypeRepository typeRepository;
     private ITypeProductRepository typeProductRepository;
     private ISizeRepository sizeRepository;
-    private IColorRepository colorRepository;
-    private ITypeRepository typeRepository;
     private ISizeProductRepository sizeProductRepository;
+
     @Override
-    public List<DetailProductDTO> getDetailProducts() {
-        List<Product> listProduct = getAllProducts();
-        List<SizeProduct> listsizeProduct= getAllSizeProducts();
-        List<ColorProduct>  listColorProduct= getAllColorProducts();
-        List<TypeProduct> listTYpeProduct=getAllTypeProducts();
+    public List<ProductDTO> getProducts(){
+        List<Product>productList=productRepository.findAll();
+        List<ProductDTO> productDTOS=productList.stream()
+                .map(ProductMapper.INSTANCE::toProductDTO).collect(Collectors.toList());
+        return productDTOS;
+    }
+    @Override
+    public DetailProductDTO getDetailProduct(Long id_product) {
 
-        List<DetailProductDTO> resul =  new ArrayList<DetailProductDTO>();
-        for (Product newList:listProduct){
-            DetailProductDTO detailProductDTO=new DetailProductDTO();
-            detailProductDTO.setId_product(newList.getId());
-            detailProductDTO.setAmount(newList.getAmount());
-            detailProductDTO.setDescription(newList.getDescription());
-            detailProductDTO.setIs_for_womans(newList.getIs_for_womans());
-            detailProductDTO.setPrice(newList.getPrice());
-            List<String> list=new ArrayList<String>();
-            for(SizeProduct newList2:listsizeProduct){
-                if(newList.getId().equals(newList2.getId_product())){
-                    Size size= sizeRepository.getReferenceById(newList2.getId_size());
-                    list.add(size.getDescription());
-                    detailProductDTO.setSize_product(list);
-                }
-            }
-            List<String> list2=new ArrayList<String>();
-            for(ColorProduct newList3:listColorProduct){
-                if(newList.getId().equals(newList3.getId_product())){
-                    Color color= colorRepository.getReferenceById(newList3.getId_color());
-                    list2.add(color.getDescription());
-                    detailProductDTO.setColor_product(list2);
-                }
-            }
-            List<String> list3=new ArrayList<String>();
-            for(TypeProduct newList4:listTYpeProduct){
-                if(newList.getId().equals(newList4.getId_product())){
-                    Type type= typeRepository.getReferenceById(newList4.getId_types());
-                    list3.add(type.getDescription());
-                    detailProductDTO.setType_product(list3);
-                }
-            }
+        Product product=productRepository.findById(id_product)
+                .orElseThrow((() -> new DataNotFoundException("Product  not found")));
+        DetailProductDTO detailProductDTO=ProductMapper.INSTANCE.toDetailProductDTO(product);
+        List<ColorProduct> colorList=colorProductRespository.getAllByIdProduct(product.getId());
+        List<String> list=new ArrayList<>();
+        for(ColorProduct colorProduct:colorList){
 
-            resul.add(detailProductDTO);
+            Color color1=colorRepository.findById(colorProduct.getId_color())
+                    .orElseThrow((() -> new DataNotFoundException("Color not found")));
+            list.add(color1.getDescription());
+            detailProductDTO.setColor_product(list);
         }
-        resul=resul;
-        return resul;
-    }
-    @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-    @Override
-    public List<SizeProduct> getAllSizeProducts() {
-        return sizeProductRepository.findAll();
+        list=new ArrayList<>();
+        List<TypeProduct> typeProducts=typeProductRepository.getAllByIdProduct(product.getId());
+        for(TypeProduct typeProduct:typeProducts){
+
+            Type type=typeRepository.findById(typeProduct.getId_types())
+                    .orElseThrow((() -> new DataNotFoundException("Type not found")));
+            list.add(type.getDescription());
+            detailProductDTO.setType_product(list);
+        }
+        list=new ArrayList<>();
+        List<SizeProduct> sizeProducts=sizeRepository.getAllByIdProduct(product.getId());
+        for(SizeProduct sizeProduct:sizeProducts){
+
+            Size size=sizeRepository.findById(sizeProduct.getId_size())
+                    .orElseThrow((() -> new DataNotFoundException("Size not found")));
+            list.add(size.getDescription());
+            detailProductDTO.setSize_product(list);
+        }
+        return detailProductDTO;
+
     }
 
     @Override
-    public List<ColorProduct> getAllColorProducts() {
-        return colorProductRespository.findAll();
+    public Boolean createDiscount(DiscountDTO discountDTO) {
+        if (this.discountRepository.findTopByIdProduct(discountDTO.getId_product()).isPresent()) {
+                throw new TransactionException("Discount fot this product already exists");
+        }
+        Date created = new Date();
+        Date finish= discountDTO.getFinish();
+        if(finish.before(created)){
+            throw new TransactionException("Date finish is before today");
+        }
+        Discount discount= DiscountMapper.INSTANCE.toDiscount(discountDTO);
+        discountRepository.save(discount);
+
+        return true;
     }
-    @Override
-    public List<TypeProduct> getAllTypeProducts() {
-        return typeProductRepository.findAll();
+
+
+    @Autowired
+    public void SetDiscountRepository(IDiscountRepository discountRepository) {
+        this.discountRepository=discountRepository;
     }
-
-
-
     @Autowired
     public void SetProductRepository(IProductRepository ProductRespository) {
         this.productRepository=ProductRespository;
     }
-
     @Autowired
-    public void SetSizeRepository(ISizeRepository sizeRepository) {
-        this.sizeRepository =sizeRepository;
+    public void SetIColorProductRespository(IColorProductRespository colorProductRespository) {
+        this.colorProductRespository=colorProductRespository;
     }
     @Autowired
     public void SetColorRepository(IColorRepository colorRepository) {
-        this.colorRepository =colorRepository;
+        this.colorRepository=colorRepository;
     }
     @Autowired
     public void SetTypeRepository(ITypeRepository typeRepository) {
-        this.typeRepository =typeRepository;
-    }
-    @Autowired
-    public void SetSizeProductRepository(ISizeProductRepository sizeProductRepository) {
-        this.sizeProductRepository =sizeProductRepository;
-    }
-    @Autowired
-    public void SetColorProductRepository(IColorProductRespository colorProductRepository) {
-        this.colorProductRespository =colorProductRepository;
+        this.typeRepository=typeRepository;
     }
     @Autowired
     public void SetTypeProductRepository(ITypeProductRepository typeProductRepository) {
-        this.typeProductRepository =typeProductRepository;
+        this.typeProductRepository=typeProductRepository;
     }
+    @Autowired
+    public void SetSizeRepository(ISizeRepository sizeRepository) {
+        this.sizeRepository=sizeRepository;
+    }
+
+    @Autowired
+    public void SetSizeProductRepository(ISizeProductRepository sizeProductRepository) {
+        this.sizeProductRepository=sizeProductRepository;
+    }
+
+
 
 }

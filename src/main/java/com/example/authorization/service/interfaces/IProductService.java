@@ -1,22 +1,18 @@
 package com.example.authorization.service.interfaces;
 
 import com.example.authorization.dto.*;
-import com.example.authorization.model.*;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * @autor Juan David Morantes Vergara
  */
+@Service
 public interface IProductService {
-     List<DetailProductDTO> getDetailProducts();
+     List<ProductDTO> getProducts();
 
+     DetailProductDTO getDetailProduct(Long id_product);
 
-    List<SizeProduct> getAllSizeProducts();
-
-    List<ColorProduct> getAllColorProducts();
-
-    List<TypeProduct> getAllTypeProducts();
-
-    List<Product> getAllProducts();
+     Boolean createDiscount(DiscountDTO discountDTO);
 }

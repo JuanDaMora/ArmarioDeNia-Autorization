@@ -11,10 +11,12 @@ import com.example.authorization.security.JwtTokenUtil;
 import com.example.authorization.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.stereotype.Service;
 
 /**
  * @autor Juan David Morantes Vergara
  */
+@Service
 public class UserServiceImpl implements IUserService{
         private IUserRepository userRepository;
 
