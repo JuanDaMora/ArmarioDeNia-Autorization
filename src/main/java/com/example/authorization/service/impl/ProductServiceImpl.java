@@ -3,6 +3,7 @@ package com.example.authorization.service.impl;
 import com.example.authorization.dto.*;
 import com.example.authorization.exception.DataNotFoundException;
 import com.example.authorization.exception.TransactionException;
+import com.example.authorization.mappers.CartMapper;
 import com.example.authorization.mappers.DiscountMapper;
 import com.example.authorization.mappers.ProductMapper;
 import com.example.authorization.model.*;
@@ -29,6 +30,7 @@ public class ProductServiceImpl implements IProductService {
     private ITypeProductRepository typeProductRepository;
     private ISizeRepository sizeRepository;
     private ISizeProductRepository sizeProductRepository;
+    private ICartRepository cartRepository;
 
     @Override
     public List<ProductDTO> getProducts(){
@@ -37,12 +39,19 @@ public class ProductServiceImpl implements IProductService {
                 .map(ProductMapper.INSTANCE::toProductDTO).collect(Collectors.toList());
         return productDTOS;
     }
+    public static String capitalizeFirstLetter(String original) {
+        if (original == null || original.length() == 0) {
+            return original;
+        }
+        return original.substring(0, 1).toUpperCase() + original.substring(1);
+    }
     @Override
     public DetailProductDTO getDetailProduct(Long id_product) {
 
         Product product=productRepository.findById(id_product)
                 .orElseThrow((() -> new DataNotFoundException("Product  not found")));
         DetailProductDTO detailProductDTO=ProductMapper.INSTANCE.toDetailProductDTO(product);
+        detailProductDTO.setDescription(capitalizeFirstLetter(detailProductDTO.getDescription()));
         List<ColorProduct> colorList=colorProductRespository.getAllByIdProduct(product.getId());
         List<String> list=new ArrayList<>();
         for(ColorProduct colorProduct:colorList){
@@ -62,7 +71,7 @@ public class ProductServiceImpl implements IProductService {
             detailProductDTO.setType_product(list);
         }
         list=new ArrayList<>();
-        List<SizeProduct> sizeProducts=sizeRepository.getAllByIdProduct(product.getId());
+        List<SizeProduct> sizeProducts=sizeProductRepository.getAllByIdProduct(product.getId());
         for(SizeProduct sizeProduct:sizeProducts){
 
             Size size=sizeRepository.findById(sizeProduct.getId_size())
@@ -88,6 +97,32 @@ public class ProductServiceImpl implements IProductService {
         discountRepository.save(discount);
 
         return true;
+    }
+
+    @Override
+    public Boolean deleteProduct(Long id_product) {
+        try{
+            productRepository.deleteById(id_product);
+        }catch (Exception e){
+            throw new TransactionException("Can't delete product");
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean addCart(Long id_user, Long id_product){
+        if(cartRepository.verifiCartUser(id_product, id_user) == null){
+            CartDTO cartDTO=new CartDTO();
+            cartDTO.setId_product(id_product);
+            cartDTO.setId_user(id_user);
+
+            Cart cart= CartMapper.INSTANCE.toCart(cartDTO);
+            cartRepository.save(cart);
+            return true;
+        }else{
+            return false;
+        }
+
     }
 
 
@@ -125,6 +160,10 @@ public class ProductServiceImpl implements IProductService {
         this.sizeProductRepository=sizeProductRepository;
     }
 
+    @Autowired
+    public void SetCartRepository(ICartRepository cartRepository) {
+        this.cartRepository= cartRepository;
+    }
 
 
 }

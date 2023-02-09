@@ -15,13 +15,13 @@ import java.util.List;
 /**
  * @autor Juan David Morantes Vergara
  */
+@CrossOrigin(origins = "http://10.14.8.75")
 @RestController
 @RequestMapping("/public/api/products")
 public class ProductController {
 
     private IProductService productService;
     @Autowired
-    @Qualifier("productServiceImpl")
     public void setPublicationService(IProductService productService) {
         this.productService = productService;
     }
@@ -37,11 +37,21 @@ public class ProductController {
         return ResponseEntity.ok(detailProductDTOS);
     }
 
+    @DeleteMapping("/id_product")
+    public ResponseEntity<Boolean> deleteProduct(@PathVariable Long id_product){
+        return ResponseEntity.ok(productService.deleteProduct(id_product));
+    }
+
     @PostMapping("/discount")
     public ResponseEntity<Boolean> createDiscount(@Valid @RequestBody DiscountDTO discountDTO){
         return ResponseEntity.ok(productService.createDiscount(discountDTO));
     }
 
+    @PostMapping("/cart/{id_user}/{id_pdrodut}")
+    public ResponseEntity<Boolean> addCart(@PathVariable Long id_pdrodut,
+                                           @PathVariable Long id_user){
+        return ResponseEntity.ok(productService.addCart( id_user,id_pdrodut ));
+    }
 
 
 }

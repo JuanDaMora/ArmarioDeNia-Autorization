@@ -15,4 +15,8 @@ public interface IProductService {
      DetailProductDTO getDetailProduct(Long id_product);
 
      Boolean createDiscount(DiscountDTO discountDTO);
+
+     Boolean deleteProduct(Long id_product);
+
+     Boolean addCart(Long id_user, Long id_product);
 }
