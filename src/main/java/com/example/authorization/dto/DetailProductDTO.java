@@ -19,7 +19,7 @@ public class DetailProductDTO implements Serializable {
     @NotNull
     private String url_photo;
     @NotNull
-    private List<String> type_product;
+    private String type_product;
     @NotNull
     private List<String>  color_product;
     @NotNull

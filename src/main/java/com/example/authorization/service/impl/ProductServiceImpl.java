@@ -37,6 +37,11 @@ public class ProductServiceImpl implements IProductService {
         List<Product>productList=productRepository.findAll();
         List<ProductDTO> productDTOS=productList.stream()
                 .map(ProductMapper.INSTANCE::toProductDTO).collect(Collectors.toList());
+        for(ProductDTO productDTO:productDTOS){
+            TypeProduct typeProduct=typeProductRepository.getTypeProductById_product(productDTO.getId());
+            Type type=typeRepository.getByIdProduct(typeProduct.getId_types());
+            productDTO.setType_product(type.getDescription());
+        }
         return productDTOS;
     }
     public static String capitalizeFirstLetter(String original) {
@@ -62,14 +67,8 @@ public class ProductServiceImpl implements IProductService {
             detailProductDTO.setColor_product(list);
         }
         list=new ArrayList<>();
-        List<TypeProduct> typeProducts=typeProductRepository.getAllByIdProduct(product.getId());
-        for(TypeProduct typeProduct:typeProducts){
-
-            Type type=typeRepository.findById(typeProduct.getId_types())
-                    .orElseThrow((() -> new DataNotFoundException("Type not found")));
-            list.add(type.getDescription());
-            detailProductDTO.setType_product(list);
-        }
+        Type type=typeRepository.getByIdProduct(product.getId());
+        detailProductDTO.setType_product(type.getDescription());
         list=new ArrayList<>();
         List<SizeProduct> sizeProducts=sizeProductRepository.getAllByIdProduct(product.getId());
         for(SizeProduct sizeProduct:sizeProducts){
@@ -79,6 +78,7 @@ public class ProductServiceImpl implements IProductService {
             list.add(size.getDescription());
             detailProductDTO.setSize_product(list);
         }
+        detailProductDTO.setDescription(capitalizeFirstLetter(detailProductDTO.getDescription()));
         return detailProductDTO;
 
     }

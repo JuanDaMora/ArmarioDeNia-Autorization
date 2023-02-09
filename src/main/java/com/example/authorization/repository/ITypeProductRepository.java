@@ -12,6 +12,6 @@ import java.util.List;
  */
 @Repository
 public interface ITypeProductRepository extends JpaRepository<TypeProduct,Long> {
-    @Query("From TypeProduct t Where t.id_product=:id")
-    List<TypeProduct> getAllByIdProduct(Long id);
+    @Query("From TypeProduct t Where t.id_product=:id_product")
+    TypeProduct getTypeProductById_product(Long id_product);
 }
