@@ -6,7 +6,6 @@ import com.example.authorization.dto.UserDTO;
 import com.example.authorization.service.interfaces.IAuthorizationService;
 import com.example.authorization.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

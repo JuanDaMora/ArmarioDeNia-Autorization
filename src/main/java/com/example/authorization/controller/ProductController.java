@@ -21,10 +21,7 @@ import java.util.List;
 public class ProductController {
 
     private IProductService productService;
-    @Autowired
-    public void setPublicationService(IProductService productService) {
-        this.productService = productService;
-    }
+
 
     @GetMapping
     public ResponseEntity<List<ProductDTO>> getProducts(){
@@ -53,5 +50,8 @@ public class ProductController {
         return ResponseEntity.ok(productService.addCart( id_user,id_pdrodut ));
     }
 
-
+    @Autowired
+    public void setPublicationService(IProductService productService) {
+        this.productService = productService;
+    }
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 /**
  * @autor Juan David Morantes Vergara
  */
-@Service
+
 public interface IUserService {
     UserDTO getUserDataByToken(String token);
     Boolean createUser(UserDTO userDTO);

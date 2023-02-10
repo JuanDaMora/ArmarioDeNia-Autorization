@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @autor Juan David Morantes Vergara
  */
-@Service
+
 public interface IProductService {
      List<ProductDTO> getProducts();
 
